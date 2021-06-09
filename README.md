@@ -1,3 +1,3 @@
 # Bitcoin Price Fetcher
-###Endpoints
+### Endpoints
  GET getBitcoinPrices - returns date-price entries for last 7 days
