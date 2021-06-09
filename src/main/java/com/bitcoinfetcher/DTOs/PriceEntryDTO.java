@@ -1,18 +1,18 @@
 package com.bitcoinfetcher.DTOs;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class PriceEntryDTO {
 
-  private String date;
+  private Date date;
   private Float price;
 
-  public PriceEntryDTO(String date, Float price) {
+  public PriceEntryDTO(Date date, Float price) {
     this.date = date;
     this.price = price;
   }
 
-  public String getDate() {
+  public Date getDate() {
     return date;
   }
 
