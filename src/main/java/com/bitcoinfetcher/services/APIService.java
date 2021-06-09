@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import org.springframework.http.HttpEntity;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
@@ -54,17 +55,50 @@ public class APIService {
       PriceEntryDTO entry = new PriceEntryDTO(key, price);
       arrayEntries.add(entry);
     }
+
+    // print linear regression prediction
+    SimpleRegression linearRegressionModel = getLinearRegressionModel(arrayEntries);
+    System.out.println(makePrediction(linearRegressionModel, arrayEntries,10));
+
     return arrayEntries;
   }
 
-  public SimpleRegression getLinearRegressionModel (ArrayList<PriceEntryDTO> array) {
+  public SimpleRegression getLinearRegressionModel (List<PriceEntryDTO> array) {
     SimpleRegression sr = new SimpleRegression();
 
     for (int i = 0; i < array.size(); i++) {
-      double x = Double.parseDouble(array.get(i).getDate());
+      String date = array.get(i).getDate();
+      double x = Double.parseDouble(date.substring(date.length()-2));
       double y = array.get(i).getPrice();
       sr.addData(x, y);
     }
     return sr;
+  }
+
+  public String makePrediction(SimpleRegression sr, List<PriceEntryDTO> array, int runs) {
+    StringBuilder sb = new StringBuilder();
+    // Display the intercept of the regression
+    sb.append("Intercept: " + sr.getIntercept());
+    sb.append("\n");
+    // Display the slope of the regression.
+    sb.append("Slope: " + sr.getSlope());
+    sb.append("\n");
+    // Display the slope standard error
+    sb.append("Standard Error: " + sr.getSlopeStdErr());
+    sb.append("\n");
+    // Display adjusted R2 value
+    sb.append("Adjusted R2 value: " + sr.getRSquare());
+    sb.append("\n");
+    sb.append("*************************************************");
+    sb.append("\n");
+    sb.append("Running predictions......");
+    sb.append("\n");
+
+    for (int i = 0 ; i < runs ; i++) {
+      int rn = Integer.parseInt(array.get(6).getDate().substring(8))+i+1;
+      sb.append("Day: " + rn + "  Predicted bitcoin price: " + Math.round(sr.predict(rn)));
+      sb.append("\n");
+    }
+    return sb.toString();
   }
 }
